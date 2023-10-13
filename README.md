@@ -1,11 +1,9 @@
 # ZORA-AIO
 
-* ### [RU](#RU)
-* ### [EN](#EN)
+* ### [RU](#ru-1)
+* ### [EN](#en-1)
 
 # RU
-<a name="RU"></a>
-
 ### Модули
 1. Бридж через официальный мост https://zora.co/
 2. Парсер бесплатных нфт (на зоре) с https://mint.fun/
@@ -86,7 +84,6 @@
 3. Ограниченное количество нфт на юзера. Возможно, что по одному контракту не будут проходить транзакции с разным количеством.
 
 # EN
-<a name="EN"></a>
 ### Modules
 1. Bridge through the official bridge https://zora.co/
 2. Parser of free nft's (on zora) from https://mint.fun/
