@@ -9,7 +9,7 @@ from web3 import Web3
 from web3.middleware import geth_poa_middleware
 from web3.exceptions import ContractLogicError
 
-CONTRACT_ZORA_BRIDGE = "0x43260ee547c3965bb2a0174763bb8FEcC650BA4A"
+CONTRACT_ZORA_BRIDGE = "0x1a0ad011913A150f69f6A19DF447A0CfD9551054"
 
 def get_private_keys():
     with open('data/keys.txt', 'r') as file:

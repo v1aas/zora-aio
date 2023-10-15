@@ -20,6 +20,7 @@ def bridge(private_keys: List[str]):
         zora.bridge_deposit(key, eth_to_send)
         seconds = random.randint(Config.MIN_TIME_FOR_TXN, Config.MAX_TIME_FOR_TXN)
         print(f"Ожидаю {seconds} до отправки следующей транзакции")
+        time.sleep(seconds)
 
 def parse():
     pars.parse_nft_contracts()
@@ -46,6 +47,7 @@ def mint(private_keys: List[str]):
                             break
                         seconds = random.randint(Config.MIN_TIME_FOR_TXN, Config.MAX_TIME_FOR_TXN)
                         print(f"Ожидаю {seconds} до отправки следующей транзакции")
+                        time.sleep(seconds)
         else:
             proxy = next(proxy_list)
             random.shuffle(contracts)
