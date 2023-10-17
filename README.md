@@ -6,8 +6,8 @@
 # RU
 ### Модули
 1. Бридж через официальный мост https://zora.co/
-2. Парсер бесплатных нфт (на зоре) с https://mint.fun/
-3. Минт нфт также с https://mint.fun/
+2. Парсер бесплатных нфт (на зоре) с https://mint.fun/ (нужен прокси для СНГ)
+3. Минт нфт также с https://mint.fun/ (нужны прокси для СНГ)
 
 ## Настройка
 Весь сетап происходит в config.py, пропущу момент с установлением библиотек и очевидных вещей. Если вы нубик, то посмотрите прошлые мои софты, там все подробно описано.
@@ -76,7 +76,11 @@
 
 Ошибка в парсинге, ничего страшного, на его результаты это не повлияет, просто скип
 
-2. Ошибка при минте
+2. При парсинге не отображются варианты минта (mint_choices) 
+
+Нужно установить сертификат selenium-wire [ссылка, как это сделать](https://stackoverflow.com/questions/72201652/selenium-wire-your-connection-is-not-secure)
+
+3. Ошибка при минте
 
 Здесь существует несколько проблем:
 1. Неправильное отображение цены на минтфане, например на сайте 0.00099, а настоящая цена 0.000999. Такое исправлять только руками.
@@ -156,7 +160,11 @@ In `data/contracts.json` - this is where the contracts from minfan are located. 
 
 Error in parsing, no big deal, it won't affect the results, just a skip
 
-2. Error in mint
+2. Parsing does not display mint variants (mint_choices) 
+
+Need to install selenium-wire certificate [link how to do it](https://stackoverflow.com/questions/72201652/selenium-wire-your-connection-is-not-secure)
+
+3. Error in mint
 
 There are several problems here:
 1. Incorrect display of the price on mintfun, for example on the site 0.00099, and the real price is 0.000999. This can only be corrected by hand.
