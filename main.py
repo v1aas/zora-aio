@@ -9,9 +9,11 @@ from loguru import logger
 from typing import List
 from termcolor import cprint
 
+
 def get_private_keys():
     with open('data/keys.txt', 'r') as file:
         return [line.strip() for line in file.readlines()]
+
 
 def bridge(private_keys: List[str]):
     for num, key in enumerate(private_keys, start=1):
@@ -19,11 +21,13 @@ def bridge(private_keys: List[str]):
         eth_to_send = round(random.uniform(Config.MAX_TO_BRIDGE, Config.MIN_TO_BRIDGE), 5)
         zora.bridge_deposit(key, eth_to_send)
         seconds = random.randint(Config.MIN_TIME_FOR_TXN, Config.MAX_TIME_FOR_TXN)
-        print(f"Ожидаю {seconds} до отправки следующей транзакции")
+        logger.info(f"Ожидаю {seconds} до отправки следующей транзакции")
         time.sleep(seconds)
+
 
 def parse():
     pars.parse_nft_contracts()
+
 
 def mint(private_keys: List[str]):
     contracts = zora.get_contract_list(Config.ONLY_FREE)
@@ -46,7 +50,7 @@ def mint(private_keys: List[str]):
                             logger.error("Возникла ошибка с контрактом! Перехожу к следующему!")
                             break
                         seconds = random.randint(Config.MIN_TIME_FOR_TXN, Config.MAX_TIME_FOR_TXN)
-                        print(f"Ожидаю {seconds} до отправки следующей транзакции")
+                        logger.info(f"Ожидаю {seconds} до отправки следующей транзакции")
                         time.sleep(seconds)
         else:
             proxy = next(proxy_list)
@@ -66,7 +70,8 @@ def mint(private_keys: List[str]):
                         seconds = random.randint(Config.MIN_TIME_FOR_TXN, Config.MAX_TIME_FOR_TXN)
                         logger.info(f"Ожидаю {seconds} секунд до отправки следующей транзакции")
                         time.sleep(seconds)
-    
+
+
 def main():
     cprint(random.choice(Config.TITLES), random.choice(Config.COLORS))
     print("https://t.me/v1aas \n")
@@ -96,5 +101,7 @@ def main():
         else:
             print("Неправильный выбор!")
 
+
 if __name__ == "__main__":
     main()
+    

@@ -11,9 +11,11 @@ from web3.exceptions import ContractLogicError
 
 CONTRACT_ZORA_BRIDGE = "0x1a0ad011913A150f69f6A19DF447A0CfD9551054"
 
+
 def get_private_keys():
     with open('data/keys.txt', 'r') as file:
         return [line.strip() for line in file.readlines()]
+
 
 def check_gwei():
     web3 = Web3(Web3.HTTPProvider(Config.ETH_RPC))
@@ -25,6 +27,7 @@ def check_gwei():
         else:
             logger.info(f"Газ в порядке: {round(currnet_gwei, 3)}")
             break
+
 
 def get_contract_list(only_free: bool = False):
     contract_list = []
@@ -55,33 +58,40 @@ def get_contract_list(only_free: bool = False):
                 contract_list.append(contractDto)
     return contract_list
 
+
 def bridge_deposit(private_key, eth_to_send):
-    check_gwei()
-    web3 = Web3(Web3.HTTPProvider(Config.ETH_RPC))
-    bridge_contract = web3.eth.contract(address=CONTRACT_ZORA_BRIDGE, abi=Config.ZORA_ABI)
-    client = Client(web3, private_key)
-    txn = bridge_contract.functions.depositTransaction(
-        client.address,
-        web3.to_wei(eth_to_send, 'ether'),
-        50000,
-        False,
-        web3.to_bytes(text='')
-    ).build_transaction({
-        'chainId': 1,
-        'from': web3.to_checksum_address(client.address),
-        'value': web3.to_wei(eth_to_send, 'ether'),
-        'gas': 99936,
-        'gasPrice': web3.eth.gas_price,
-        'nonce': web3.eth.get_transaction_count(client.address),
-    })
-    signed_txn = web3.eth.account.sign_transaction(txn, client.private_key)
-    txn_hash = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    logger.info(f"Транзакция отправлена. Хэш: {txn_hash.hex()}")
-    receipt = web3.eth.wait_for_transaction_receipt(txn_hash)
-    if (receipt['status'] == 1):
-        logger.success(f"Транзакция прошла успешно! Бридж успешен!")
-    else:
-        logger.error(f"Ошибка. Статус: {receipt['status']}")
+    try:
+        check_gwei()
+        web3 = Web3(Web3.HTTPProvider(Config.ETH_RPC))
+        bridge_contract = web3.eth.contract(address=CONTRACT_ZORA_BRIDGE, abi=Config.BRIDGE_ABI)
+        client = Client(web3, private_key)
+        max_priority_fee_per_gas, max_fee_per_gas = get_eip1559_gas(web3)
+        txn = bridge_contract.functions.depositTransaction(
+            client.address,
+            web3.to_wei(eth_to_send, 'ether'),
+            50000,
+            False,
+            web3.to_bytes(text='')
+        ).build_transaction({
+            'chainId': 1,
+            'from': web3.to_checksum_address(client.address),
+            'value': web3.to_wei(eth_to_send, 'ether'),
+            'gas': 99936,
+            'maxPriorityFeePerGas': max_priority_fee_per_gas,
+            'maxFeePerGas': max_fee_per_gas,
+            'nonce': web3.eth.get_transaction_count(client.address),
+        })
+        signed_txn = web3.eth.account.sign_transaction(txn, client.private_key)
+        txn_hash = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        logger.info(f"Транзакция отправлена. Хэш: {txn_hash.hex()}")
+        receipt = web3.eth.wait_for_transaction_receipt(txn_hash)
+        if (receipt['status'] == 1):
+            logger.success(f"Транзакция прошла успешно! Бридж успешен!")
+        else:
+            logger.error(f"Ошибка. Статус: {receipt['status']}")
+    except Exception as e:
+        logger.error(f"Возникла ошибка: {e}")
+
 
 def mint_nft(private_key, contract, value, amount, type, proxy):
     if proxy == None:
@@ -102,6 +112,7 @@ def mint_nft(private_key, contract, value, amount, type, proxy):
         logger.success(f"Транзакция прошла успешно! NFT заминчено!")
     else:
         logger.error(f"Ошибка. Статус: {receipt['status']}")
+
 
 def get_transaction(web3, contract, address, value, amount, type):
     if type == "ERC721":
@@ -160,6 +171,7 @@ def get_transaction(web3, contract, address, value, amount, type):
             return tx_raw
         except ContractLogicError as e:
             print(f"Ошибка контракта: {e}")
+
 
 def get_eip1559_gas(web3):
     latest_block = web3.eth.get_block('latest')
